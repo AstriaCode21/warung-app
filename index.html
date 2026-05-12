@@ -1,1 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Warung App</title>
+</head>
+<body>
 
+<h1>Data Barang</h1>
+
+<div id="data"></div>
+
+<script>
+const sheetID = "18ZVwlCXWKbUkF-oepi7jtkmgHD4KpXX5f5gDFvzKlMI";
+
+const url =
+`https://opensheet.elk.sh/${sheetID}/barang`;
+
+fetch(url)
+.then(res => res.json())
+.then(data => {
+
+  let html = "";
+
+  data.forEach(item => {
+    html += `
+      <p>
+        ${item.nama} -
+        Rp ${item.harga} -
+        Stok: ${item.stok}
+      </p>
+    `;
+  });
+
+  document.getElementById("data").innerHTML = html;
+
+});
+</script>
+
+</body>
+</html>
