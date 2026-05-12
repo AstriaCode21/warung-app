@@ -1,64 +1,69 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Warung App</title>
-
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
 <body class="bg-light">
 
-<div class="container py-4">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-dark bg-primary">
 
-  <h1 class="mb-4">
-    Warung App
-  </h1>
+    <div class="container-fluid">
 
-  <!-- Search -->
-  <div class="mb-4">
-    <input
-      type="text"
-      id="search"
-      class="form-control"
-      placeholder="Cari barang..."
-    >
-  </div>
-
-  <!-- Data Barang -->
- <div class="row">
-
-  <!-- BARANG -->
-  <div class="col-md-8">
-
-    <div class="row" id="data">
-
-      <div class="text-center">
-        Loading...
-      </div>
+      <span class="navbar-brand">
+        Warung App
+      </span>
 
     </div>
 
-  </div>
+  </nav>
 
-  <!-- KERANJANG -->
-  <div class="col-md-4">
 
-    <div class="card shadow border-0">
+  <div class="container py-4">
 
-      <div class="card-body">
+    <!-- SEARCH -->
+    <div class="mb-4">
 
-        <h4 class="mb-3">
-          Keranjang
-        </h4>
+      <input
+        type="text"
+        id="search"
+        class="form-control form-control-lg"
+        placeholder="Cari barang..."
+      >
 
-        <div id="keranjang">
+    </div>
 
-          Belum ada barang
+
+    <!-- ROW -->
+    <div class="row">
+
+      <!-- BARANG -->
+      <div class="col-md-8">
+
+        <div class="row" id="data">
+
+          <div class="text-center">
+            Loading...
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- KERANJANG -->
+      <div class="col-md-4">
+
+        <div class="card shadow border-0">
+
+          <div class="card-body">
+
+            <h4 class="mb-3">
+              Keranjang
+            </h4>
+
+            <div id="keranjang">
+
+              Belum ada barang
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -68,148 +73,131 @@
 
   </div>
 
-</div>
 
-</div>
+  <!-- SCRIPT -->
+  <script>
 
-</div>
+  const sheetID = "18ZVwlCXWKbUkF-oepi7jtkmgHD4KpXX5f5gDFvzKlMI";
 
-<script>
+  const url =
+  `https://opensheet.elk.sh/${sheetID}/barang`;
 
-const sheetID = "18ZVwlCXWKbUkF-oepi7jtkmgHD4KpXX5f5gDFvzKlMI";
+  let barangData = [];
 
-const url =
-`https://opensheet.elk.sh/${sheetID}/barang`;
-
-let barangData = [];
-
-// KERANJANG
-let keranjang = [];
-
-fetch(url)
-.then(res => res.json())
-.then(data => {
-
-  barangData = data;
-
-  tampilkanBarang(barangData);
-
-});
+  let keranjang = [];
 
 
-// ======================
-// TAMPILKAN BARANG
-// ======================
+  fetch(url)
+  .then(res => res.json())
+  .then(data => {
 
-function tampilkanBarang(data) {
+    barangData = data;
 
-  let html = "";
-
-  data.forEach((item, index) => {
-
-    html += `
-    
-    <div class="col-md-4 mb-4">
-
-      <div class="card shadow h-100 border-0">
-
-        <div class="card-body">
-
-          <h5 class="card-title fw-bold">
-            ${item.nama}
-          </h5>
-
-          <p class="mb-1">
-            Harga
-          </p>
-
-          <h4 class="text-primary">
-            Rp ${Number(item.harga).toLocaleString()}
-          </h4>
-
-          <p class="mt-3">
-            Stok:
-            <span class="badge bg-success">
-              ${item.stok}
-            </span>
-          </p>
-
-          <button
-            class="btn btn-primary w-100"
-            onclick="tambahKeranjang(${index})"
-          >
-            Tambah
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    `;
+    tampilkanBarang(barangData);
 
   });
 
-  document.getElementById("data").innerHTML = html;
 
-}
+  // TAMPILKAN BARANG
 
+  function tampilkanBarang(data) {
 
+    let html = "";
 
-// ======================
-// TAMBAH KE KERANJANG
-// ======================
+    data.forEach((item, index) => {
 
-function tambahKeranjang(index) {
+      html += `
+      
+      <div class="col-md-4 mb-4">
 
-  const barang = barangData[index];
+        <div class="card shadow h-100 border-0">
 
-  // cek apakah barang sudah ada
-  const existing =
-    keranjang.find(item =>
-      item.nama === barang.nama
-    );
+          <div class="card-body">
 
-  if(existing) {
+            <h5 class="fw-bold">
+              ${item.nama}
+            </h5>
 
-    existing.qty += 1;
+            <h4 class="text-primary">
+              Rp ${Number(item.harga).toLocaleString()}
+            </h4>
 
-  } else {
+            <p>
+              Stok:
+              ${item.stok}
+            </p>
 
-    keranjang.push({
-      nama: barang.nama,
-      harga: Number(barang.harga),
-      qty: 1
+            <button
+              class="btn btn-primary w-100"
+              onclick="tambahKeranjang(${index})"
+            >
+              Tambah
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      `;
+
     });
+
+    document.getElementById("data").innerHTML = html;
 
   }
 
-  tampilkanKeranjang();
-
-}
 
 
+  // TAMBAH KERANJANG
 
-// ======================
-// TAMPILKAN KERANJANG
-// ======================
+  function tambahKeranjang(index) {
 
-function tampilkanKeranjang() {
+    const barang = barangData[index];
 
-  let html = "";
+    const existing =
+      keranjang.find(item =>
+        item.nama === barang.nama
+      );
 
-  let total = 0;
+    if(existing) {
 
-  keranjang.forEach(item => {
+      existing.qty += 1;
 
-    const subtotal =
-      item.harga * item.qty;
+    } else {
 
-    total += subtotal;
+      keranjang.push({
+        nama: barang.nama,
+        harga: Number(barang.harga),
+        qty: 1
+      });
 
-    html += `
-    
+    }
+
+    tampilkanKeranjang();
+
+  }
+
+
+
+  // TAMPILKAN KERANJANG
+
+  function tampilkanKeranjang() {
+
+    let html = "";
+
+    let total = 0;
+
+    keranjang.forEach(item => {
+
+      const subtotal =
+        item.harga * item.qty;
+
+      total += subtotal;
+
+      html += `
+      
       <div class="border-bottom pb-2 mb-2">
 
         <strong>
@@ -229,50 +217,54 @@ function tampilkanKeranjang() {
 
       </div>
 
+      `;
+
+    });
+
+    html += `
+    
+      <hr>
+
+      <h4>
+        Total:
+        Rp ${total.toLocaleString()}
+      </h4>
+
     `;
+
+    document.getElementById("keranjang")
+    .innerHTML = html;
+
+  }
+
+
+
+  // SEARCH
+
+  document
+  .getElementById("search")
+  .addEventListener("input", function() {
+
+    const keyword =
+      this.value.toLowerCase();
+
+    const hasil =
+      barangData.filter(item =>
+        item.nama
+        .toLowerCase()
+        .includes(keyword)
+      );
+
+    tampilkanBarang(hasil);
 
   });
 
-  html += `
-  
-    <hr>
-
-    <h4>
-      Total:
-      Rp ${total.toLocaleString()}
-    </h4>
-
-  `;
-
-  document.getElementById("keranjang").innerHTML = html;
-
-}
+  </script>
 
 
-
-// ======================
-// SEARCH
-// ======================
-
-document
-.getElementById("search")
-.addEventListener("input", function() {
-
-  const keyword =
-    this.value.toLowerCase();
-
-  const hasil =
-    barangData.filter(item =>
-      item.nama
-      .toLowerCase()
-      .includes(keyword)
-    );
-
-  tampilkanBarang(hasil);
-
-});
-
-</script>
+  <!-- BOOTSTRAP -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+  </script>
 
 </body>
-</html>
