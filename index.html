@@ -49,6 +49,9 @@ const url =
 
 let barangData = [];
 
+// KERANJANG
+let keranjang = [];
+
 fetch(url)
 .then(res => res.json())
 .then(data => {
@@ -59,46 +62,57 @@ fetch(url)
 
 });
 
+
+// ======================
+// TAMPILKAN BARANG
+// ======================
+
 function tampilkanBarang(data) {
 
   let html = "";
 
-  data.forEach(item => {
+  data.forEach((item, index) => {
 
     html += `
-      <div class="col-md-4 mb-4">
+    
+    <div class="col-md-4 mb-4">
 
-        <div class="card shadow-sm h-100">
+      <div class="card shadow h-100 border-0">
 
-          <div class="card-body">
+        <div class="card-body">
 
-            <h5 class="card-title">
-              ${item.nama}
-            </h5>
+          <h5 class="card-title fw-bold">
+            ${item.nama}
+          </h5>
 
-            <p class="mb-1">
-              Harga:
-              <strong>
-                Rp ${Number(item.harga).toLocaleString()}
-              </strong>
-            </p>
+          <p class="mb-1">
+            Harga
+          </p>
 
-            <p>
-              Stok:
+          <h4 class="text-primary">
+            Rp ${Number(item.harga).toLocaleString()}
+          </h4>
+
+          <p class="mt-3">
+            Stok:
+            <span class="badge bg-success">
               ${item.stok}
-            </p>
+            </span>
+          </p>
 
-            <button
-              class="btn btn-primary w-100"
-            >
-              Tambah
-            </button>
-
-          </div>
+          <button
+            class="btn btn-primary w-100"
+            onclick="tambahKeranjang(${index})"
+          >
+            Tambah
+          </button>
 
         </div>
 
       </div>
+
+    </div>
+
     `;
 
   });
@@ -106,6 +120,105 @@ function tampilkanBarang(data) {
   document.getElementById("data").innerHTML = html;
 
 }
+
+
+
+// ======================
+// TAMBAH KE KERANJANG
+// ======================
+
+function tambahKeranjang(index) {
+
+  const barang = barangData[index];
+
+  // cek apakah barang sudah ada
+  const existing =
+    keranjang.find(item =>
+      item.nama === barang.nama
+    );
+
+  if(existing) {
+
+    existing.qty += 1;
+
+  } else {
+
+    keranjang.push({
+      nama: barang.nama,
+      harga: Number(barang.harga),
+      qty: 1
+    });
+
+  }
+
+  tampilkanKeranjang();
+
+}
+
+
+
+// ======================
+// TAMPILKAN KERANJANG
+// ======================
+
+function tampilkanKeranjang() {
+
+  let html = "";
+
+  let total = 0;
+
+  keranjang.forEach(item => {
+
+    const subtotal =
+      item.harga * item.qty;
+
+    total += subtotal;
+
+    html += `
+    
+      <div class="border-bottom pb-2 mb-2">
+
+        <strong>
+          ${item.nama}
+        </strong>
+
+        <br>
+
+        ${item.qty} x
+        Rp ${item.harga.toLocaleString()}
+
+        <br>
+
+        <strong>
+          Rp ${subtotal.toLocaleString()}
+        </strong>
+
+      </div>
+
+    `;
+
+  });
+
+  html += `
+  
+    <hr>
+
+    <h4>
+      Total:
+      Rp ${total.toLocaleString()}
+    </h4>
+
+  `;
+
+  document.getElementById("keranjang").innerHTML = html;
+
+}
+
+
+
+// ======================
+// SEARCH
+// ======================
 
 document
 .getElementById("search")
